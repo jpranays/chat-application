@@ -15,324 +15,50 @@ import ChatIcon from "@mui/icons-material/Chat";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import PropTypes from "prop-types";
-import CloseIcon from "@mui/icons-material/Close";
-import CheckIcon from "@mui/icons-material/Check";
 import {
-	Chip,
 	Dialog,
 	DialogActions,
 	DialogContent,
 	DialogContentText,
 	DialogTitle,
-	Divider,
-	Drawer,
 	Grid,
-	List,
-	ListItem,
-	ListItemButton,
-	ListItemIcon,
-	ListItemText,
 	Tab,
 	Tabs,
 	TextField,
 } from "@mui/material";
-import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import { userCnxt } from "./AuthContext";
 import { Stack } from "@mui/system";
-const pages = ["Friends", "Chats", "Blog"];
-const API_URL = "http://localhost:3000";
+import {
+	getFriendRequests,
+	getFriendRequestsSent,
+	getFriends,
+	handleBtnClick,
+} from "./API/requests";
+import { handleLogout } from "./API/auth";
+import { handleSearchFriend } from "./API/chats";
+import Navbar from "./Navbar";
 
 const settings = ["Logout"];
 function Friends() {
-	const [anchorElNav, setAnchorElNav] = React.useState(null);
-	const [anchorElUser, setAnchorElUser] = React.useState(null);
-	const [open, setOpen] = React.useState(false);
-	const handleOpenNavMenu = (event) => {
-		setAnchorElNav(event.currentTarget);
-	};
-	const handleOpenUserMenu = (event) => {
-		setAnchorElUser(event.currentTarget);
-	};
-	const navigate = useNavigate();
-	const { user, setUser, setPersist } = React.useContext(userCnxt);
-
-	const handleCloseNavMenu = () => {
-		setAnchorElNav(null);
-	};
-
-	const handleCloseUserMenu = () => {
-		setAnchorElUser(null);
-	};
-
-	async function handleLogout() {
-		try {
-			await axios.get(`${API_URL}/logout`);
-			setUser(null);
-			setPersist(false);
-			navigate("/login");
-			localStorage.removeItem("token");
-		} catch (error) {
-			console.log(error);
-		} finally {
-			navigate("/login");
-		}
-	}
 	const [friends, setFriends] = React.useState([]);
 	const [friendRequests, setFriendRequests] = React.useState([]);
 	const [friendRequestsSent, setFriendRequestsSent] = React.useState([]);
 	React.useEffect(() => {
-		async function getFriends() {
-			try {
-				const {
-					data: { friends: userFriends },
-				} = await axios.get(`${API_URL}/friends`, {
-					headers: {
-						authorization: `${localStorage.getItem("token")}`,
-					},
-				});
-				console.log("friends:", userFriends);
-				setFriends(userFriends);
-			} catch (error) {
-				console.log(error);
-			}
-		}
-		async function getFriendRequests() {
-			try {
-				const {
-					data: { friendRequests: userFriendRequests },
-				} = await axios.get(`${API_URL}/friendRequests`, {
-					headers: {
-						authorization: `${localStorage.getItem("token")}`,
-					},
-				});
-				console.log("friendRequests:", userFriendRequests);
-				setFriendRequests(userFriendRequests);
-			} catch (error) {
-				console.log(error);
-			}
-		}
-		async function getFriendRequestsSent() {
-			try {
-				const {
-					data: { friendRequestsSent: userFriendRequestsSent },
-				} = await axios.get(`${API_URL}/friendRequestsSent`, {
-					headers: {
-						authorization: `${localStorage.getItem("token")}`,
-					},
-				});
-				console.log("friendRequestsSent:", userFriendRequestsSent);
-				setFriendRequestsSent(userFriendRequestsSent);
-			} catch (error) {
-				console.log(error);
-			}
-		}
-		getFriendRequests();
-		getFriendRequestsSent();
-
-		getFriends();
+		getFriendRequests(setFriendRequests);
+		getFriendRequestsSent(setFriendRequestsSent);
+		getFriends(setFriends);
 	}, []);
 	const [username, setUsername] = React.useState("");
 	const [openAddFriend, setOpenAddFriend] = React.useState(false);
 	const [tabValue, setTabValue] = React.useState(0);
 	const [searchedUser, setSearchedUser] = React.useState(null);
 
-	async function handleAddFriend() {
-		try {
-			const { data } = await axios.post(
-				`${API_URL}/sendrequest`,
-				{
-					receiver: searchedUser._id,
-				},
-				{
-					headers: {
-						authorization: `${localStorage.getItem("token")}`,
-					},
-				}
-			);
-			console.log(data);
-			setFriendRequests(userFriendRequests);
-		} catch (error) {
-			console.log(error);
-		}
-	}
 	function handleTabChange(event, newValue) {
 		setTabValue(newValue);
-	}
-	async function handleSearchFriend() {
-		if (searchedUser) {
-			return setSearchedUser(null);
-		}
-		try {
-			const { data } = await axios.get(`${API_URL}/searchFriend/${username}`, {
-				headers: {
-					authorization: `${localStorage.getItem("token")}`,
-				},
-			});
-			setSearchedUser(data);
-			console.log(data);
-		} catch (error) {
-			console.log(error);
-		}
 	}
 
 	return (
 		<>
-			<AppBar position="static">
-				<Container maxWidth="xl">
-					<Toolbar disableGutters>
-						<ChatIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-						<Typography
-							variant="h6"
-							noWrap
-							component="a"
-							href="/"
-							sx={{
-								mr: 2,
-								display: { xs: "none", md: "flex" },
-								fontFamily: "monospace",
-								fontWeight: 700,
-								letterSpacing: ".3rem",
-								color: "inherit",
-								textDecoration: "none",
-							}}
-						>
-							Chat App
-						</Typography>
-
-						<Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-							<IconButton
-								size="large"
-								aria-label="account of current user"
-								aria-controls="menu-appbar"
-								aria-haspopup="true"
-								onClick={() => {
-									setOpen(true);
-								}}
-								color="inherit"
-							>
-								<MenuIcon />
-							</IconButton>
-							<Drawer
-								anchor={"left"}
-								open={open}
-								sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
-								onClose={() => {
-									setOpen(false);
-								}}
-							>
-								<Box
-									sx={{
-										width: 250,
-									}}
-									role="presentation"
-								>
-									<IconButton
-										size="large"
-										aria-label="account of current user"
-										aria-controls="menu-appbar"
-										aria-haspopup="true"
-										onClick={() => {
-											setOpen(false);
-										}}
-										color="inherit"
-										sx={{}}
-									>
-										<MenuIcon />
-									</IconButton>
-									<Divider />
-									<List>
-										{pages.map((text, index) => (
-											<ListItem
-												key={text}
-												disablePadding
-												onClick={() => {
-													navigate(`/${text.toLowerCase()}`);
-												}}
-												sx={{
-													backgroundColor: "transparent",
-												}}
-											>
-												<ListItemButton>
-													<ListItemIcon>
-														{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-													</ListItemIcon>
-													<ListItemText primary={text} />
-												</ListItemButton>
-											</ListItem>
-										))}
-									</List>
-									<Divider />
-								</Box>
-							</Drawer>
-						</Box>
-						<ChatIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
-						<Typography
-							variant="h5"
-							noWrap
-							component="a"
-							href="/"
-							sx={{
-								mr: 2,
-								display: { xs: "flex", md: "none" },
-								flexGrow: 1,
-								fontFamily: "monospace",
-								fontWeight: 700,
-								letterSpacing: ".3rem",
-								color: "inherit",
-								textDecoration: "none",
-							}}
-						>
-							Chat App
-						</Typography>
-						<Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-							{pages.map((page) => (
-								<Button
-									key={page}
-									onClick={() => {
-										navigate(`/${page.toLowerCase()}`);
-									}}
-									sx={{
-										my: 2,
-										color: "white",
-										display: "block",
-									}}
-								>
-									{page}
-								</Button>
-							))}
-						</Box>
-
-						<Box sx={{ flexGrow: 0 }}>
-							<Tooltip title={user.username}>
-								<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-									<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-								</IconButton>
-							</Tooltip>
-							<Menu
-								sx={{ mt: "45px" }}
-								id="menu-appbar"
-								anchorEl={anchorElUser}
-								anchorOrigin={{
-									vertical: "top",
-									horizontal: "right",
-								}}
-								keepMounted
-								transformOrigin={{
-									vertical: "top",
-									horizontal: "right",
-								}}
-								open={Boolean(anchorElUser)}
-								onClose={handleCloseUserMenu}
-							>
-								<MenuItem onClick={handleLogout}>
-									<Typography textAlign="center">Logout</Typography>
-								</MenuItem>
-							</Menu>
-						</Box>
-					</Toolbar>
-				</Container>
-			</AppBar>
+			<Navbar pages={["Friends", "Chats"]} />
 			<Container sx={{ mt: 5 }}>
 				<Grid container spacing={2}>
 					<Grid item xs={12} md={6} lg={4}>
@@ -387,7 +113,12 @@ function Friends() {
 								>
 									Cancel
 								</Button>
-								<Button onClick={handleSearchFriend} color="primary">
+								<Button
+									onClick={() => {
+										handleSearchFriend(searchedUser, setSearchedUser, username);
+									}}
+									color="primary"
+								>
 									Search
 								</Button>
 							</DialogActions>
@@ -493,24 +224,6 @@ TabPanel.propTypes = {
 	value: PropTypes.number.isRequired,
 };
 function UserCard({ user: { username, _id }, action }) {
-	async function handleBtnClick(choice, _id) {
-		try {
-			const { data } = await axios.post(
-				`${API_URL}/${choice}`,
-				{
-					id: _id,
-				},
-				{
-					headers: {
-						authorization: `${localStorage.getItem("token")}`,
-					},
-				}
-			);
-			console.log(data);
-		} catch (error) {
-			console.log(error);
-		}
-	}
 	return (
 		<>
 			<Stack

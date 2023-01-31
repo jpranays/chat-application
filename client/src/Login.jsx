@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import {
 	Alert,
-	Box,
 	Button,
 	FormControl,
 	FormHelperText,
@@ -13,9 +12,9 @@ import {
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "./register.css";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { userCnxt } from "./AuthContext";
+import { handleLogin } from "./API/auth";
 
 function Login() {
 	const [snackbar, setSnackbar] = React.useState({
@@ -23,40 +22,12 @@ function Login() {
 		message: "something went wrong",
 		severity: "error",
 	});
-	const API_URL = "http://localhost:3000";
 	const validationSchema = Yup.object({
 		username: Yup.string().required(),
 		password: Yup.string().required(),
 	});
 	const { setUser, setPersist } = useContext(userCnxt);
 	const navigate = useNavigate();
-	async function handleLogin({ username, password }) {
-		try {
-			const {
-				data: { user, token },
-			} = await axios.post(`${API_URL}/login`, {
-				username,
-				password,
-			});
-			setUser(user);
-			console.log(user);
-			navigate("/dashboard");
-			setSnackbar({
-				...snackbar,
-				open: false,
-			});
-			setPersist(localStorage.getItem("token"));
-			localStorage.setItem("token", token);
-		} catch (error) {
-			const { data } = error.response;
-			console.log(data);
-			setSnackbar({
-				open: true,
-				message: data.message || "Something went wrong",
-				severity: "error",
-			});
-		}
-	}
 	return (
 		<div className="form-container">
 			<Snackbar
@@ -86,7 +57,7 @@ function Login() {
 					confirmPassword: "",
 				}}
 				onSubmit={(formValues) => {
-					handleLogin(formValues);
+					handleLogin(formValues, setSnackbar, setUser, navigate, setPersist);
 				}}
 				validationSchema={validationSchema}
 			>

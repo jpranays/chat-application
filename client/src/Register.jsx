@@ -1,7 +1,6 @@
 import React from "react";
 import {
 	Alert,
-	Box,
 	Button,
 	FormControl,
 	FormHelperText,
@@ -13,15 +12,14 @@ import {
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "./register.css";
-import axios from "axios";
 import { Link } from "react-router-dom";
+import { handleRegister } from "./API/auth";
 function Register() {
 	const [snackbar, setSnackbar] = React.useState({
 		open: false,
 		message: "User created",
 		severity: "success",
 	});
-	const API_URL = "http://localhost:3000";
 	const validationSchema = Yup.object({
 		username: Yup.string().required().min(3).max(10),
 		password: Yup.string().required().min(5).max(15),
@@ -29,27 +27,6 @@ function Register() {
 			.required()
 			.equals([Yup.ref("password")], "Passwords dont match"),
 	});
-	async function handleRegister({ username, password }) {
-		try {
-			const { data } = await axios.post(`${API_URL}/register`, {
-				username,
-				password,
-			});
-			setSnackbar({
-				open: true,
-				message: data.message,
-				severity: "success",
-			});
-		} catch (error) {
-			const { data } = error.response;
-			console.log(data);
-			setSnackbar({
-				open: true,
-				message: data.message || "Something went wrong",
-				severity: "error",
-			});
-		}
-	}
 	return (
 		<div className="form-container">
 			<Snackbar
@@ -79,7 +56,7 @@ function Register() {
 					confirmPassword: "",
 				}}
 				onSubmit={(formValues) => {
-					handleRegister(formValues);
+					handleRegister(formValues, setSnackbar);
 				}}
 				validationSchema={validationSchema}
 			>
