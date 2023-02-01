@@ -64,27 +64,8 @@ export async function getFriendRequestsSent(setFriendRequestsSent) {
 		console.log(error);
 	}
 }
-export async function handleSearchFriend(
-	searchedUser,
-	setSearchedUser,
-	username
-) {
-	if (searchedUser) {
-		return setSearchedUser(null);
-	}
-	try {
-		const { data } = await axios.get(`${API_URL}/searchFriend/${username}`, {
-			headers: {
-				authorization: `${localStorage.getItem("token")}`,
-			},
-		});
-		setSearchedUser(data);
-		console.log(data);
-	} catch (error) {
-		console.log(error);
-	}
-}
-export async function handleBtnClick(choice, _id) {
+
+export async function handleBtnClick(choice, _id, setUpdate) {
 	try {
 		const { data } = await axios.post(
 			`${API_URL}/${choice}`,
@@ -98,6 +79,7 @@ export async function handleBtnClick(choice, _id) {
 			}
 		);
 		console.log(data);
+		setUpdate((prev) => !prev);
 	} catch (error) {
 		console.log(error);
 	}

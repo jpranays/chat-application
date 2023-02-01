@@ -1,6 +1,6 @@
 import axios from "axios";
 const API_URL = "http://localhost:3000/chats";
-export async function getChatId(setCurrentChat, setMessages, receiver) {
+export async function getChatId(setCurrentChat, setMessages, receiver, socket) {
 	try {
 		const {
 			data: { _id, users, messages },
@@ -10,6 +10,7 @@ export async function getChatId(setCurrentChat, setMessages, receiver) {
 			},
 		});
 		setCurrentChat(_id);
+		socket.emit("join", _id);
 		setMessages(messages);
 	} catch (error) {
 		console.log(error);
@@ -20,7 +21,8 @@ export async function handleSendMessage(
 	currentChat,
 	receiver,
 	setMessage,
-	setMessages
+	setMessages,
+	socket
 ) {
 	try {
 		const { data } = await axios.post(
@@ -38,6 +40,10 @@ export async function handleSendMessage(
 		);
 		setMessage("");
 		setMessages((prevMessages) => [...prevMessages, data]);
+		socket.emit("message", {
+			chatId: currentChat,
+			message: data,
+		});
 	} catch (error) {
 		console.log(error);
 	}

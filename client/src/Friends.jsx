@@ -42,11 +42,12 @@ function Friends() {
 	const [friends, setFriends] = React.useState([]);
 	const [friendRequests, setFriendRequests] = React.useState([]);
 	const [friendRequestsSent, setFriendRequestsSent] = React.useState([]);
+	const [update, setUpdate] = React.useState(false);
 	React.useEffect(() => {
 		getFriendRequests(setFriendRequests);
 		getFriendRequestsSent(setFriendRequestsSent);
 		getFriends(setFriends);
-	}, []);
+	}, [update]);
 	const [username, setUsername] = React.useState("");
 	const [openAddFriend, setOpenAddFriend] = React.useState(false);
 	const [tabValue, setTabValue] = React.useState(0);
@@ -54,6 +55,7 @@ function Friends() {
 
 	function handleTabChange(event, newValue) {
 		setTabValue(newValue);
+		setUpdate(!update);
 	}
 
 	return (
@@ -145,7 +147,11 @@ function Friends() {
 									<Grid container spacing={2}>
 										{friends.map((friend) => (
 											<Grid item xs={12} md={6} lg={4} key={friend._id}>
-												<UserCard user={friend} action={"removefriend"} />
+												<UserCard
+													user={friend}
+													action={"removefriend"}
+													setUpdate={setUpdate}
+												/>
 											</Grid>
 										))}
 									</Grid>
@@ -164,7 +170,11 @@ function Friends() {
 									<Grid container spacing={2}>
 										{friendRequests.map((user) => (
 											<Grid item xs={12} md={6} lg={4} key={user._id}>
-												<UserCard user={user} action="acceptrequest" />
+												<UserCard
+													user={user}
+													action="acceptrequest"
+													setUpdate={setUpdate}
+												/>
 											</Grid>
 										))}
 									</Grid>
@@ -183,7 +193,11 @@ function Friends() {
 									<Grid container spacing={2}>
 										{friendRequestsSent.map((user) => (
 											<Grid item xs={12} md={6} lg={4} key={user._id}>
-												<UserCard user={user} action="cancelrequest" />
+												<UserCard
+													user={user}
+													action="cancelrequest"
+													setUpdate={setUpdate}
+												/>
 											</Grid>
 										))}
 									</Grid>
@@ -223,7 +237,7 @@ TabPanel.propTypes = {
 	index: PropTypes.number.isRequired,
 	value: PropTypes.number.isRequired,
 };
-function UserCard({ user: { username, _id }, action }) {
+function UserCard({ user: { username, _id }, action, setUpdate }) {
 	return (
 		<>
 			<Stack
@@ -242,7 +256,7 @@ function UserCard({ user: { username, _id }, action }) {
 						variant="text"
 						color="primary"
 						onClick={() => {
-							handleBtnClick("sendrequest", _id);
+							handleBtnClick("sendrequest", _id, setUpdate);
 						}}
 					>
 						Send Request
@@ -254,7 +268,7 @@ function UserCard({ user: { username, _id }, action }) {
 							variant="text"
 							color="primary"
 							onClick={() => {
-								handleBtnClick("acceptrequest", _id);
+								handleBtnClick("acceptrequest", _id, setUpdate);
 							}}
 						>
 							Accept
@@ -263,7 +277,7 @@ function UserCard({ user: { username, _id }, action }) {
 							variant="text"
 							color="primary"
 							onClick={() => {
-								handleBtnClick("rejectrequest", _id);
+								handleBtnClick("rejectrequest", _id, setUpdate);
 							}}
 						>
 							Reject
@@ -275,7 +289,7 @@ function UserCard({ user: { username, _id }, action }) {
 						variant="text"
 						color="primary"
 						onClick={() => {
-							handleBtnClick("cancelrequest", _id);
+							handleBtnClick("cancelrequest", _id, setUpdate);
 						}}
 					>
 						Cancel
@@ -286,7 +300,7 @@ function UserCard({ user: { username, _id }, action }) {
 						variant="text"
 						color="primary"
 						onClick={() => {
-							handleBtnClick("removefriend", _id);
+							handleBtnClick("removefriend", _id, setUpdate);
 						}}
 					>
 						Remove

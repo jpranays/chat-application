@@ -1,19 +1,9 @@
 import * as React from "react";
-import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
-import ChatIcon from "@mui/icons-material/Chat";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import { io } from "socket.io-client";
 
 import {
 	Divider,
@@ -34,7 +24,11 @@ import { getChatId, handleSendMessage } from "./API/chats";
 import Navbar from "./Navbar";
 
 const settings = ["Logout"];
+let socket;
 function Chats() {
+	React.useEffect(() => {
+		socket = io("http://localhost:3000/");
+	}, []);
 	const navigate = useNavigate();
 	const { user, setUser, setPersist } = React.useContext(userCnxt);
 
@@ -47,9 +41,14 @@ function Chats() {
 		getFriends(setFriends);
 	}, []);
 	React.useEffect(() => {
-		if (receiver) getChatId(setCurrentChat, setMessages, receiver);
+		if (receiver) getChatId(setCurrentChat, setMessages, receiver, socket);
 	}, [receiver]);
-
+	React.useEffect(() => {
+		socket.on("newMessage", (data) => {
+			console.log(data, receiver, currentChat);
+			setMessages((prevMessages) => [...prevMessages, data]);
+		});
+	}, []);
 	return (
 		<>
 			<Navbar pages={["Friends", "Chats"]} />
@@ -101,6 +100,7 @@ function Chats() {
 									width: "100%",
 									display: "flex",
 									flexDirection: "column",
+									overflowY: "scroll",
 								}}
 							>
 								{messages.length > 0 ? (
@@ -159,7 +159,8 @@ function Chats() {
 											currentChat,
 											receiver,
 											setMessage,
-											setMessages
+											setMessages,
+											socket
 										);
 									}}
 									disabled={!receiver || message.length < 1}
