@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
 	Alert,
 	Button,
@@ -11,24 +11,32 @@ import {
 } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import "./register.css";
-import { Link } from "react-router-dom";
-import { handleRegister } from "./API/auth";
-function Register() {
+import { Link, useNavigate } from "react-router-dom";
+import { userCnxt } from "../Context/AuthContext";
+import { handleLogin } from "../API/auth";
+
+function Login() {
 	const [snackbar, setSnackbar] = React.useState({
 		open: false,
-		message: "User created",
-		severity: "success",
+		message: "something went wrong",
+		severity: "error",
 	});
 	const validationSchema = Yup.object({
-		username: Yup.string().required().min(3).max(10),
-		password: Yup.string().required().min(5).max(15),
-		confirmPassword: Yup.string()
-			.required()
-			.equals([Yup.ref("password")], "Passwords dont match"),
+		username: Yup.string().required(),
+		password: Yup.string().required(),
 	});
+	const { setUser, setPersist } = useContext(userCnxt);
+	const navigate = useNavigate();
 	return (
-		<div className="form-container">
+		<div
+			className="form-container"
+			style={{
+				display: "flex",
+				justifyContent: "center",
+				alignItems: "center",
+				height: "100vh",
+			}}
+		>
 			<Snackbar
 				open={snackbar.open}
 				anchorOrigin={{
@@ -56,7 +64,7 @@ function Register() {
 					confirmPassword: "",
 				}}
 				onSubmit={(formValues) => {
-					handleRegister(formValues, setSnackbar);
+					handleLogin(formValues, setSnackbar, setUser, navigate, setPersist);
 				}}
 				validationSchema={validationSchema}
 			>
@@ -76,7 +84,7 @@ function Register() {
 					noValidate
 				>
 					<Typography variant="h6" component="div" gutterBottom>
-						Create an account
+						Login
 					</Typography>
 					<Field name="username">
 						{({ field, form }) => {
@@ -93,7 +101,6 @@ function Register() {
 							);
 						}}
 					</Field>
-
 					<Field name="password">
 						{({ field, form }) => {
 							return (
@@ -109,28 +116,11 @@ function Register() {
 							);
 						}}
 					</Field>
-					<Field name="confirmPassword">
-						{({ field, form }) => {
-							return (
-								<FormControl
-									error={Boolean(
-										form.touched.confirmPassword && form.errors.confirmPassword
-									)}
-								>
-									<InputLabel>Confirm Password</InputLabel>
-									<Input type="password" {...field} />
-									<FormHelperText>
-										<ErrorMessage name="confirmPassword" />
-									</FormHelperText>
-								</FormControl>
-							);
-						}}
-					</Field>
 					<Button type="submit" variant="contained" color="primary">
-						Register
+						Login
 					</Button>
 					<span>
-						Already an user? <Link to={"/login"}>Login</Link>
+						No account? <Link to={"/register"}>Register</Link>
 					</span>
 				</Form>
 			</Formik>
@@ -138,4 +128,4 @@ function Register() {
 	);
 }
 
-export default Register;
+export default Login;

@@ -15,6 +15,14 @@ const messageSchema = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: "Chat",
 	},
+	isReply: {
+		type: Boolean,
+		default: false,
+	},
+	replyTo: {
+		type: Schema.Types.ObjectId,
+		ref: "Message",
+	},
 });
 
 export default model("Message", messageSchema);

@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { userCnxt } from "./AuthContext";
-import axios from "axios";
-import { verifyToken } from "./API/auth";
+import { Navigate, Outlet } from "react-router-dom";
+import { userCnxt } from "../Context/AuthContext";
+import { verifyToken } from "../API/auth";
 
 function PersistRoute() {
 	const { user, setUser, persist } = useContext(userCnxt);

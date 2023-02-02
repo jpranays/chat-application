@@ -1,11 +1,13 @@
 import express from "express";
 import mongoose from "mongoose";
-import "dotenv/config";
+import { Server } from "socket.io";
 import { authRouter } from "./Routes/Auth.js";
 import { requestRouter } from "./Routes/request.js";
 import { chatsRouter } from "./Routes/Chats.js";
-import { Server } from "socket.io";
+import "dotenv/config";
+
 const app = express();
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
@@ -38,17 +40,11 @@ mongoose.set("strictQuery", false);
 	});
 
 	io.on("connection", (socket) => {
-		console.log("User connected", socket.id);
 		socket.on("join", (chatId) => {
 			socket.join(chatId);
-			console.log("User joined chat", socket.id, chatId);
 		});
 		socket.on("message", ({ chatId, message }) => {
-			console.log("Message received", message, chatId);
 			socket.in(chatId).emit("newMessage", message);
-		});
-		socket.on("disconnect", () => {
-			console.log("User disconnected", socket.id);
 		});
 	});
 })();

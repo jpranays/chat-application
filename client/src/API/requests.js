@@ -13,7 +13,6 @@ export async function handleAddFriend(searchedUser) {
 				},
 			}
 		);
-		console.log(data);
 	} catch (error) {
 		console.log(error);
 	}
@@ -43,7 +42,6 @@ export async function getFriendRequests(setFriendRequests) {
 				authorization: `${localStorage.getItem("token")}`,
 			},
 		});
-		console.log("friendRequests:", userFriendRequests);
 		setFriendRequests(userFriendRequests);
 	} catch (error) {
 		console.log(error);
@@ -58,7 +56,6 @@ export async function getFriendRequestsSent(setFriendRequestsSent) {
 				authorization: `${localStorage.getItem("token")}`,
 			},
 		});
-		console.log("friendRequestsSent:", userFriendRequestsSent);
 		setFriendRequestsSent(userFriendRequestsSent);
 	} catch (error) {
 		console.log(error);
@@ -78,7 +75,6 @@ export async function handleBtnClick(choice, _id, setUpdate) {
 				},
 			}
 		);
-		console.log(data);
 		setUpdate((prev) => !prev);
 	} catch (error) {
 		console.log(error);

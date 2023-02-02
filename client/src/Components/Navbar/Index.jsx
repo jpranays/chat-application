@@ -16,15 +16,13 @@ import {
 } from "@mui/material";
 import ChatIcon from "@mui/icons-material/Chat";
 import MenuIcon from "@mui/icons-material/Menu";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import Avatar from "@mui/material/Avatar";
 
-import { Divider, ListItem, ListItemIcon } from "@mui/material";
+import { Divider, ListItem } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { userCnxt } from "./AuthContext";
-import { handleLogout } from "./API/auth";
+import { userCnxt } from "../../Context/AuthContext";
+import { handleLogout } from "../../API/auth";
 
 function Navbar({ pages }) {
 	const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -123,9 +121,6 @@ function Navbar({ pages }) {
 											}}
 										>
 											<ListItemButton>
-												<ListItemIcon>
-													{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-												</ListItemIcon>
 												<ListItemText primary={text} />
 											</ListItemButton>
 										</ListItem>

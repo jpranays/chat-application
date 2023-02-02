@@ -22,7 +22,12 @@ export async function handleSendMessage(
 	receiver,
 	setMessage,
 	setMessages,
-	socket
+	socket,
+	isReplying,
+	replyMessageId,
+	setIsReplying,
+	setReplyMessage,
+	setReplyMessageId
 ) {
 	try {
 		const { data } = await axios.post(
@@ -31,6 +36,8 @@ export async function handleSendMessage(
 				content: message,
 				chat_id: currentChat,
 				to: receiver,
+				isReplying: isReplying,
+				replyMessageId: isReplying ? replyMessageId : null,
 			},
 			{
 				headers: {
@@ -39,6 +46,9 @@ export async function handleSendMessage(
 			}
 		);
 		setMessage("");
+		setIsReplying(false);
+		setReplyMessage(null);
+		setReplyMessageId(null);
 		setMessages((prevMessages) => [...prevMessages, data]);
 		socket.emit("message", {
 			chatId: currentChat,
@@ -63,8 +73,17 @@ export async function handleSearchFriend(
 			},
 		});
 		setSearchedUser(data);
-		console.log(data);
 	} catch (error) {
 		console.log(error);
 	}
 }
+export const getAllRecentChat = async (setRecentChats) => {
+	const {
+		data: { chats },
+	} = await axios.get(`${API_URL}`, {
+		headers: {
+			authorization: `${localStorage.getItem("token")}`,
+		},
+	});
+	setRecentChats(chats);
+};

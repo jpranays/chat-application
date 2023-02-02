@@ -1,19 +1,8 @@
 import * as React from "react";
-import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
-import ChatIcon from "@mui/icons-material/Chat";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import PropTypes from "prop-types";
 import {
 	Dialog,
@@ -26,32 +15,30 @@ import {
 	Tabs,
 	TextField,
 } from "@mui/material";
-import { Stack } from "@mui/system";
 import {
 	getFriendRequests,
 	getFriendRequestsSent,
 	getFriends,
-	handleBtnClick,
-} from "./API/requests";
-import { handleLogout } from "./API/auth";
-import { handleSearchFriend } from "./API/chats";
-import Navbar from "./Navbar";
+} from "../API/requests";
+import { handleSearchFriend } from "../API/chats";
+import Navbar from "../Components/Navbar/Index";
+import UserCard from "../Components/UserCard/Index";
 
-const settings = ["Logout"];
 function Friends() {
 	const [friends, setFriends] = React.useState([]);
 	const [friendRequests, setFriendRequests] = React.useState([]);
 	const [friendRequestsSent, setFriendRequestsSent] = React.useState([]);
 	const [update, setUpdate] = React.useState(false);
+	const [username, setUsername] = React.useState("");
+	const [openAddFriend, setOpenAddFriend] = React.useState(false);
+	const [tabValue, setTabValue] = React.useState(0);
+	const [searchedUser, setSearchedUser] = React.useState(null);
+
 	React.useEffect(() => {
 		getFriendRequests(setFriendRequests);
 		getFriendRequestsSent(setFriendRequestsSent);
 		getFriends(setFriends);
 	}, [update]);
-	const [username, setUsername] = React.useState("");
-	const [openAddFriend, setOpenAddFriend] = React.useState(false);
-	const [tabValue, setTabValue] = React.useState(0);
-	const [searchedUser, setSearchedUser] = React.useState(null);
 
 	function handleTabChange(event, newValue) {
 		setTabValue(newValue);
@@ -82,7 +69,11 @@ function Friends() {
 						>
 							<DialogTitle id="form-dialog-title">Add Friend</DialogTitle>
 							{searchedUser ? (
-								<UserCard user={searchedUser} action="sendrequest" />
+								<UserCard
+									user={searchedUser}
+									action="sendrequest"
+									setUpdate={setUpdate}
+								/>
 							) : (
 								<>
 									<DialogContent>
@@ -237,79 +228,6 @@ TabPanel.propTypes = {
 	index: PropTypes.number.isRequired,
 	value: PropTypes.number.isRequired,
 };
-function UserCard({ user: { username, _id }, action, setUpdate }) {
-	return (
-		<>
-			<Stack
-				direction="row"
-				spacing={2}
-				padding={1.5}
-				justifyContent={"center"}
-				style={{
-					border: "1px solid #ccc",
-					borderRadius: "5px",
-				}}
-			>
-				<Typography variant="h5">{username}</Typography>
-				{action === "sendrequest" && (
-					<Button
-						variant="text"
-						color="primary"
-						onClick={() => {
-							handleBtnClick("sendrequest", _id, setUpdate);
-						}}
-					>
-						Send Request
-					</Button>
-				)}
-				{action === "acceptrequest" && (
-					<>
-						<Button
-							variant="text"
-							color="primary"
-							onClick={() => {
-								handleBtnClick("acceptrequest", _id, setUpdate);
-							}}
-						>
-							Accept
-						</Button>
-						<Button
-							variant="text"
-							color="primary"
-							onClick={() => {
-								handleBtnClick("rejectrequest", _id, setUpdate);
-							}}
-						>
-							Reject
-						</Button>
-					</>
-				)}
-				{action === "cancelrequest" && (
-					<Button
-						variant="text"
-						color="primary"
-						onClick={() => {
-							handleBtnClick("cancelrequest", _id, setUpdate);
-						}}
-					>
-						Cancel
-					</Button>
-				)}
-				{action === "removefriend" && (
-					<Button
-						variant="text"
-						color="primary"
-						onClick={() => {
-							handleBtnClick("removefriend", _id, setUpdate);
-						}}
-					>
-						Remove
-					</Button>
-				)}
-			</Stack>
-		</>
-	);
-}
 
 function a11yProps(index) {
 	return {
