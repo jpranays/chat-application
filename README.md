@@ -16,4 +16,6 @@
 
 ![Registration](./public/registration.gif)
 
+## `Login`
+
 ![Login](./public/login.gif)
