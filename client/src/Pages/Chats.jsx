@@ -6,13 +6,11 @@ import Button from "@mui/material/Button";
 import { io } from "socket.io-client";
 import {
 	Divider,
-	Drawer,
 	FormControl,
 	IconButton,
 	List,
 	ListItem,
 	ListItemButton,
-	ListItemIcon,
 	ListItemText,
 	TextField,
 } from "@mui/material";
@@ -127,7 +125,6 @@ function Chats() {
 											_id={_id}
 											content={content}
 											sender={sender}
-											user={user}
 											isReply={isReply}
 											replyTo={replyTo}
 											handleReply={handleReply}

@@ -35,7 +35,7 @@ export const loginController = async (req, res) => {
 	);
 	res.status(200).json({
 		user: {
-			id: userFound._id,
+			_id: userFound._id,
 			username: userFound.username,
 		},
 		token,

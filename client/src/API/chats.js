@@ -87,3 +87,13 @@ export const getAllRecentChat = async (setRecentChats) => {
 	});
 	setRecentChats(chats);
 };
+export const getMessageContent = async (setReplyToContent, replyTo) => {
+	const {
+		data: { message },
+	} = await axios.get(`http://localhost:3000/chats/message/${replyTo}`, {
+		headers: {
+			authorization: `${localStorage.getItem("token")}`,
+		},
+	});
+	setReplyToContent(message.content);
+};

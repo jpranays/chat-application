@@ -4,6 +4,7 @@ import { Box, Container, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getAllRecentChat } from "../API/chats";
+import { ReactComponent as DashboardSVG } from "../Assests/dashboard.svg";
 
 function Dashboard() {
 	const [recentChats, setRecentChats] = React.useState([]);
@@ -16,7 +17,10 @@ function Dashboard() {
 			<Container sx={{ mt: 10 }}>
 				{recentChats.length > 0 ? (
 					recentChats.map((chat) => (
-						<Link to={`/chats/${chat.chat_id}/${chat.user._id}`}>
+						<Link
+							to={`/chats/${chat.chat_id}/${chat.user._id}`}
+							key={chat.chat_id}
+						>
 							<Box
 								sx={{
 									display: "flex",
@@ -39,21 +43,29 @@ function Dashboard() {
 						</Link>
 					))
 				) : (
-					<Box
+					<Container
 						sx={{
-							width: "100%",
+							display: "flex",
+							justifyContent: "center",
+							position: "relative",
 						}}
 					>
-						<Box
-							sx={{ borderBottom: 2, paddingBottom: 3, borderColor: "divider" }}
+						<DashboardSVG style={{ height: 500 }} />
+						<Typography
+							variant="h5"
+							textAlign="center"
+							fontFamily="cursive"
+							sx={{
+								position: "absolute",
+								right: 0,
+								width: 200,
+								fontSize: 40,
+								lineHeight: 2,
+							}}
 						>
-							<Container sx={{ mt: 5 }}>
-								<Typography variant="h5" textAlign="center">
-									Start chatting with your friends
-								</Typography>
-							</Container>
-						</Box>
-					</Box>
+							Start chatting with your friends
+						</Typography>
+					</Container>
 				)}
 			</Container>
 		</>

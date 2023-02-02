@@ -1,0 +1,22 @@
+.message {
+	padding: 5px 10px;
+	border: 1px solid #ccc;
+	border-radius: 15px;
+	width: fit-content;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-weight: 500;
+}
+.replyTo {
+	padding: 5px 10px;
+	border: 1px solid #ccc;
+	border-radius: 15px;
+	width: fit-content;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-weight: 100;
+	color: #6f4848;
+	background-color: rgb(209, 209, 209);
+}
