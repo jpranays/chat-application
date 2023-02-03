@@ -19,3 +19,13 @@
 ## `Login`
 
 ![Login](./public/login.gif)
+
+## `Pages`
+
+#### `Friends`
+
+![Friends](./public/friends-page.gif)
+
+#### `Chats`
+
+![Chats](./public/chats-page.gif)
