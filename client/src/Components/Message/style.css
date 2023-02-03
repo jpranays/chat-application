@@ -16,7 +16,9 @@
 	display: flex;
 	align-items: center;
 	gap: 10px;
-	font-weight: 100;
+	font-weight: 400;
 	color: #6f4848;
 	background-color: rgb(209, 209, 209);
+	font-size: 12px;
+	font-family: sans-serif;
 }

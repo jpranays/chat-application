@@ -1,7 +1,7 @@
 # 🔏🗨️`Private Chat Application`💬 🔏
 
 **_A Fullstack MERN Application_**
-**_Realtime messaging application with websockets using Node.js, Express, MongoDB and Socket.io with React.js for the frontend._**
+**_Realtime messaging application with websockets using Node.js, Express, MongoDB and Socket&middot;io with React.js for the frontend._**
 
 ## 📌 Features 📌
 
@@ -29,3 +29,23 @@
 #### `Chats`
 
 ![Chats](./public/chats-page.gif)
+
+## `Sending friend request`
+
+![Sending friend request](./public/send-request.gif)
+
+## `Accepting friend request`
+
+![Accepting friend request](./public/accept-request.gif)
+
+## `Messaging`
+
+![Messaging](./public/messaging.gif)
+
+## `Replying to a specific message`
+
+![Messaging](./public/reply-to-message.gif)
+
+## `Logout`
+
+![Logout](./public/logout.gif)
