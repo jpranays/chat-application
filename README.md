@@ -1,4 +1,4 @@
-# 🔏🗨️`Private Chat Application`💬 🔏  
+# 🔏🗨️`Private Chat Application`💬 🔏   
 
 **_A Fullstack MERN_**
 **_Realtime messaging application with websockets using Node.js, Express, MongoDB and Socket&middot;io with React.js for the frontend._**
